@@ -33,4 +33,5 @@ public interface BoardRepository extends
         bindings.bind(root.boardHashtag).first(StringExpression::containsIgnoreCase);
         bindings.bind(root.createdAt).first(StringExpression::eq);
     }
+
 }

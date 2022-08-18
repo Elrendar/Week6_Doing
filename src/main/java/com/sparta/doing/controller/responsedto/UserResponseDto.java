@@ -16,7 +16,7 @@ import javax.validation.constraints.NotBlank;
 @Jacksonized
 @Getter
 @Builder
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @FieldDefaults(makeFinal = true, level = AccessLevel.PROTECTED)
 public class UserResponseDto {
     @NotBlank

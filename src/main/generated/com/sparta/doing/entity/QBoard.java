@@ -30,6 +30,10 @@ public class QBoard extends EntityPathBase<Board> {
 
     public final StringPath boardHashtag = createString("boardHashtag");
 
+    public final NumberPath<Integer> boardLikeCount = createNumber("boardLikeCount", Integer.class);
+
+    public final ListPath<BoardLike, QBoardLike> boardLikeList = this.<BoardLike, QBoardLike>createList("boardLikeList", BoardLike.class, QBoardLike.class, PathInits.DIRECT2);
+
     public final StringPath boardTitle = createString("boardTitle");
 
     public final NumberPath<Integer> countBoardVisit = createNumber("countBoardVisit", Integer.class);
@@ -41,6 +45,10 @@ public class QBoard extends EntityPathBase<Board> {
 
     //inherited
     public final StringPath modifiedAt = _super.modifiedAt;
+
+    public final NumberPath<Integer> postCount = createNumber("postCount", Integer.class);
+
+    public final ListPath<PostEntity, QPostEntity> posts = this.<PostEntity, QPostEntity>createList("posts", PostEntity.class, QPostEntity.class, PathInits.DIRECT2);
 
     public final QUserEntity userEntity;
 

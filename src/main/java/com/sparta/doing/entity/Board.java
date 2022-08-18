@@ -1,14 +1,13 @@
 package com.sparta.doing.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.doing.controller.requestdto.BoardRequestDto;
 import lombok.*;
 
 import javax.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import static javax.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
 
 @Builder
@@ -18,7 +17,6 @@ import static lombok.AccessLevel.PROTECTED;
         @Index(columnList = "boardTitle"),
         @Index(columnList = "boardHashtag"),
         @Index(columnList = "createdAt")
-//        @Index(columnList = "createdBy")
 })
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor(access = PROTECTED)
@@ -26,6 +24,7 @@ import static lombok.AccessLevel.PROTECTED;
 public class Board extends TimeStamp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "board_id")
     private Long id; // 게시판 Id
 
     @Column(nullable = false)
@@ -36,10 +35,8 @@ public class Board extends TimeStamp {
 
     @Column(nullable = false)
     private String boardContent; // 게시판 내용(TextBox)
-    //    private String boardThumbnail; // 게시판 썸네일
+    //    private String thumbnailUrl; // 게시판 썸네일
     private String boardHashtag; // 게시판 해시태그
-
-//    private Long countPost; // 게시판에 딸려있는 게시글 수
 
     @Column(nullable = false)
     private int countBoardVisit; // 게시판 방문자 수
@@ -47,14 +44,24 @@ public class Board extends TimeStamp {
     @Column(nullable = false)
     private int boardLikeCount = 0; // 게시판 좋아요 수
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_userentity_board"))
     private UserEntity userEntity;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BoardLike> boardLikeList = new ArrayList<>();
 
-    public void visit(){
+    @Column
+    private int postCount; // 게시글 개수
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "board",
+            cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostEntity> posts = new ArrayList<>();
+
+    public void visit() {
         this.countBoardVisit += 1;
     }
 
@@ -76,8 +83,16 @@ public class Board extends TimeStamp {
         userEntity.mapToBoard(this);
     }
 
-    public void mapToBoardLike(BoardLike boardLike) { boardLikeList.add(boardLike); }
+    public void mapToBoardLike(BoardLike boardLike) {
+        boardLikeList.add(boardLike);
+    }
 
+    public void mapToPost(PostEntity postEntity) {
+        posts.add(postEntity);
+        postCount = posts.size();
+        postEntity.setBoard(this);
+    }
+    
     public void update(BoardRequestDto boardDto) {
         this.boardTitle = boardDto.getBoardTitle();
         this.boardContent = boardDto.getBoardContent();

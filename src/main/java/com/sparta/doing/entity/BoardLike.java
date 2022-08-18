@@ -23,12 +23,12 @@ public class BoardLike {
     @JoinColumn(name = "board_id", foreignKey = @ForeignKey(name = "FK_board_boardlike"))
     private Board board;
 
-    public void mapToUserEntity(UserEntity userEntity){
+    public void mapToUserEntity(UserEntity userEntity) {
         this.userEntity = userEntity;
         userEntity.mapToBoardLike(this);
     }
 
-    public void mapToBoard(Board board){
+    public void mapToBoard(Board board) {
         this.board = board;
         board.mapToBoardLike(this);
     }

@@ -119,9 +119,12 @@ public class SecurityConfig /*implements WebMvcConfigurer*/ {
                 .antMatchers("/users/**").permitAll()
 
                 .antMatchers(HttpMethod.GET, "/boards/**").permitAll()
+                // .antMatchers(HttpMethod.GET, "/boards/**/posts/**").permitAll()
+                // .antMatchers(HttpMethod.POST, "/boards/**/posts/**").hasAnyAuthority(Authority.ROLE_USER.name())
                 .antMatchers(HttpMethod.POST, "/boards/**").hasAnyAuthority(Authority.ROLE_USER.name())
                 .antMatchers(HttpMethod.PUT, "/boards/**").hasAnyAuthority(Authority.ROLE_USER.name())
                 .antMatchers(HttpMethod.DELETE, "/boards/**").hasAnyAuthority(Authority.ROLE_USER.name())
+
 
                 // 나머지는 전부 인증 필요
                 .anyRequest().authenticated()

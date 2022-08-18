@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.doing.controller.requestdto.SignUpDto;
 import com.sparta.doing.util.UserFunction;
 import com.sun.istack.NotNull;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
@@ -15,23 +17,17 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "userEntity",
-        indexes = {
-                @Index(columnList = "email", unique = true)
-                // @Index(columnList = "createdAt"),
-                // @Index(columnList = "createdBy")
-        })
+@Table(name = "users",
+        indexes = {@Index(columnList = "email", unique = true)})
 // @JsonPropertyOrder({"id", "username", "password", "email", "nickname",
 //         "authority", "createdAt", "modifiedAt"})
 @FieldDefaults(makeFinal = true, level = AccessLevel.PROTECTED)
 @Getter
 public class UserEntity extends TimeStamp {
-
     @Id
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id = null;
-
     @NotNull
     @Column(unique = true, length = 50)
     String username;
@@ -48,11 +44,23 @@ public class UserEntity extends TimeStamp {
     @Enumerated(EnumType.STRING)
     Authority authority;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY,
+            mappedBy = "userEntity",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<Board> boardList = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY,
+            mappedBy = "userEntity",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<BoardLike> boardLikeList = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY,
+            mappedBy = "userEntity",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<PostEntity> posts = new ArrayList<>();
 
     protected UserEntity() {
         this.username = null;
@@ -63,7 +71,8 @@ public class UserEntity extends TimeStamp {
     }
 
     @Builder(builderClassName = "buildDefaultUser",
-            builderMethodName = "buildDefaultUser")
+            builderMethodName = "buildDefaultUser",
+            access = AccessLevel.PROTECTED)
     protected UserEntity(String username,
                          String password,
                          String email,
@@ -100,6 +109,10 @@ public class UserEntity extends TimeStamp {
 
     public void mapToBoardLike(BoardLike boardLike) {
         boardLikeList.add(boardLike);
+    }
+
+    public void mapToPost(PostEntity postEntity) {
+        posts.add(postEntity);
     }
 
     @Override

@@ -2,13 +2,15 @@ package com.sparta.doing.service;
 
 import com.sparta.doing.controller.dto.BoardDto;
 import com.sparta.doing.controller.requestdto.BoardRequestDto;
+import com.sparta.doing.controller.requestdto.PostRequestDto;
 import com.sparta.doing.controller.responsedto.BoardResponseDto;
 import com.sparta.doing.entity.Board;
 import com.sparta.doing.entity.BoardLike;
+import com.sparta.doing.entity.PostEntity;
 import com.sparta.doing.entity.UserEntity;
 import com.sparta.doing.entity.constant.SearchType;
-import com.sparta.doing.repository.BoardLikeRepository;
 import com.sparta.doing.exception.BoardNotFoundException;
+import com.sparta.doing.repository.BoardLikeRepository;
 import com.sparta.doing.repository.BoardRepository;
 import com.sparta.doing.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -79,15 +81,7 @@ public class BoardService {
         // 조회수 증가
         getOneBoard.visit();
         // 반환
-        return BoardResponseDto.builder()
-                .id(getOneBoard.getId())
-                .boardTitle(getOneBoard.getBoardTitle())
-                .boardContent(getOneBoard.getBoardContent())
-                .authorName(getOneBoard.getAuthorName())
-                .boardHashtag(getOneBoard.getBoardHashtag())
-                .countBoardVisit(getOneBoard.getCountBoardVisit())
-                .createdAt(getOneBoard.getCreatedAt())
-                .build();
+        return BoardResponseDto.from(getOneBoard);
     }
 
     public void updateBoard(Long boardId, BoardRequestDto
@@ -143,5 +137,25 @@ public class BoardService {
 //            foundBoardToLike.updateLikeCount();
 //            boardLikeRepository.save(boardLike);
 //        }
+
     }
+
+    public BoardResponseDto createPost(Long boardId, PostRequestDto postRequestDto) {
+        var board = boardRepository.findById(boardId)
+                .orElseThrow(
+                        () -> new BoardNotFoundException(
+                                boardId + ": 해당 게시판을 찾을 수 없습니다.")
+                );
+        board.mapToPost(PostEntity.of(postRequestDto, board));
+
+        return BoardResponseDto.from(board);
+    }
+
+    // public List<PostResponseDto> getPosts(Long boardId) {
+    //     var board = boardRepository.findById(boardId)
+    //             .orElseThrow(
+    //                     () -> new BoardNotFoundException(
+    //                             boardId + ": 해당 게시판을 찾을 수 없습니다."));
+    //     return
+    // }
 }

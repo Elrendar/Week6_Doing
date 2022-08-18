@@ -11,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -34,10 +33,6 @@ public class BoardController {
                                                     @PageableDefault(size = 8, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<BoardResponseDto> boards = boardService.searchBoards(searchType, searchValue, pageable).map(BoardResponseDto::from);
         List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), boards.getTotalPages());
-
-        // map.addAttribute("boards", boards);
-        // map.addAttribute("paginationBarNumbers", barNumbers);
-        // map.addAttribute("searchTypes", SearchType.values());
 
         return boards;
     }
@@ -80,7 +75,7 @@ public class BoardController {
     // 1개 게시판 내용 수정 Url로 이동 시 인증되지 않은 유저는 login.html로 이동한다.
     @PostMapping("/{boardId}/like")
     public String boardLike(@PathVariable(name = "boardId") Long boardId,
-                                        @AuthenticationPrincipal UserDetails userDetails) {
+                            @AuthenticationPrincipal UserDetails userDetails) {
         String userId = userDetails.getUsername();
 
         if (userId.isEmpty()) {

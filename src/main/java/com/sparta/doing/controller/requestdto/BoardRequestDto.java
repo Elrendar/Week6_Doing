@@ -1,7 +1,6 @@
 package com.sparta.doing.controller.requestdto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import com.sparta.doing.controller.dto.BoardDto;
 import com.sparta.doing.controller.dto.UserDto;
 import lombok.*;
@@ -22,13 +21,13 @@ public class BoardRequestDto {
     private String createdAt;
 
     public BoardDto toDto(UserDto userDto) {
-        return BoardDto.of(
-                boardTitle,
-                authorName,
-                boardContent,
-                boardHashtag,
-                countBoardVisit,
-                userDto
-        );
+        return BoardDto.builder()
+                .boardTitle(this.boardTitle)
+                .authorName(this.authorName)
+                .boardContent(this.boardContent)
+                .boardHashtag(this.boardHashtag)
+                .userDto(userDto)
+                .countBoardVisit(this.countBoardVisit)
+                .build();
     }
 }

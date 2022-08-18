@@ -3,7 +3,10 @@ package com.sparta.doing.controller.responsedto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sparta.doing.controller.dto.BoardDto;
 import com.sparta.doing.entity.Board;
+import com.sparta.doing.entity.PostEntity;
 import lombok.*;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -17,9 +20,8 @@ public class BoardResponseDto {
     private String boardContent;
     private String boardHashtag;
     private int countBoardVisit;
-    private String email;
-    private String nickname;
     private String createdAt;
+    private List<PostEntity> posts;
 
     public static BoardResponseDto from(BoardDto boardDto) {
         if (boardDto == null) {
@@ -33,6 +35,7 @@ public class BoardResponseDto {
         boardResponseDto.setBoardHashtag(boardDto.getBoardHashtag());
         boardResponseDto.setCountBoardVisit(boardDto.getCountBoardVisit());
         boardResponseDto.setCreatedAt(boardDto.getCreatedAt());
+        boardResponseDto.setPosts(boardDto.getPosts());
 
         return boardResponseDto;
     }
@@ -44,6 +47,7 @@ public class BoardResponseDto {
                 .boardContent(board.getBoardContent())
                 .boardHashtag(board.getBoardHashtag())
                 .countBoardVisit(board.getCountBoardVisit())
+                .posts(board.getPosts())
                 .build();
     }
 }
