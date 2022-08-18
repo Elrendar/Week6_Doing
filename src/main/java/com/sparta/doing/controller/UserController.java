@@ -3,9 +3,11 @@ package com.sparta.doing.controller;
 import com.sparta.doing.controller.requestdto.LoginDto;
 import com.sparta.doing.controller.requestdto.SignUpDto;
 import com.sparta.doing.controller.requestdto.TokenRequestDto;
+import com.sparta.doing.controller.requestdto.UserRequestDto;
 import com.sparta.doing.controller.responsedto.TokenDto;
 import com.sparta.doing.controller.responsedto.UserResponseDto;
 import com.sparta.doing.service.UserService;
+import com.sparta.doing.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -95,7 +97,7 @@ public class UserController {
         return ResponseEntity.ok(userService.logout());
     }
 
-//    이광훈 팀원의 코드입니다. 참고하시면 좋겠습니다.
+    //    이광훈 팀원의 코드입니다. 참고하시면 좋겠습니다.
 //    @GetMapping("/logout")
 //    public ResponseEntity<Response<String>> logout() {
 //        HttpHeaders httpHeaders = new HttpHeaders();
@@ -105,6 +107,17 @@ public class UserController {
 //        return new ResponseEntity<>(response, httpHeaders, HttpStatus.OK);
 //    }
 //}
+    // 마이페이지
+    @GetMapping("/mypage")
+    public UserResponseDto getMyInfo() {
+        var userId = SecurityUtil.getCurrentUserIdByLong();
+        return userService.getUserInfo(userId);
+    }
+
+    @PostMapping("/mypage")
+    public UserResponseDto updateMyInfo(UserRequestDto userRequestDto) {
+        return userService.updateUserInfo(userRequestDto);
+    }
 
     // 토큰 재발급
     @PostMapping("/auth/renew")

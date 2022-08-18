@@ -3,6 +3,7 @@ package com.sparta.doing.service;
 import com.sparta.doing.controller.requestdto.LoginDto;
 import com.sparta.doing.controller.requestdto.SignUpDto;
 import com.sparta.doing.controller.requestdto.TokenRequestDto;
+import com.sparta.doing.controller.requestdto.UserRequestDto;
 import com.sparta.doing.controller.responsedto.TokenDto;
 import com.sparta.doing.controller.responsedto.UserResponseDto;
 import com.sparta.doing.entity.RefreshToken;
@@ -183,11 +184,21 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserResponseDto getUserInfo(String username) {
-        return userRepository.findByUsername(username)
+    public UserResponseDto getUserInfo(Long userId) {
+        return userRepository.findById(userId)
                 .map(UserResponseDto::of)
                 .orElseThrow(
-                        () -> new UsernameNotFoundException(username + "은 올바른 아이디가 아닙니다."));
+                        () -> new UsernameNotFoundException(userId + "은 올바른 userId가 아닙니다."));
+    }
+
+    @Transactional
+    public UserResponseDto updateUserInfo(UserRequestDto requestDto) {
+        var userId = SecurityUtil.getCurrentUserIdByLong();
+        var user = userRepository.findById(userId)
+                .orElseThrow(
+                        () -> new UsernameNotFoundException(userId + "은 올바른 userId가 아닙니다."));
+        user.updateInfo(requestDto);
+        return UserResponseDto.of(userRepository.save(user));
     }
 
     public boolean checkUsername(String username) {
