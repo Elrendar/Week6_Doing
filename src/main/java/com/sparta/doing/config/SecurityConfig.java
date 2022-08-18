@@ -117,6 +117,7 @@ public class SecurityConfig /*implements WebMvcConfigurer*/ {
 
                 .antMatchers("/users/auth/renew").hasAnyAuthority(Authority.ROLE_USER.name())
                 .antMatchers("/users/**").permitAll()
+                .antMatchers("/").permitAll()
 
                 .antMatchers(HttpMethod.GET, "/boards/**").permitAll()
                 // .antMatchers(HttpMethod.GET, "/boards/**/posts/**").permitAll()
