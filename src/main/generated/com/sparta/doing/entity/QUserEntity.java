@@ -31,6 +31,8 @@ public class QUserEntity extends EntityPathBase<UserEntity> {
     //inherited
     public final StringPath createdAt = _super.createdAt;
 
+    public final StringPath description = createString("description");
+
     public final StringPath email = createString("email");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);

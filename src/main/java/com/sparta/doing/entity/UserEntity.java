@@ -2,12 +2,12 @@ package com.sparta.doing.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.doing.controller.requestdto.SignUpDto;
+import com.sparta.doing.controller.requestdto.UserRequestDto;
 import com.sparta.doing.util.UserFunction;
 import com.sun.istack.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.experimental.FieldDefaults;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
 
@@ -21,7 +21,6 @@ import java.util.Objects;
         indexes = {@Index(columnList = "email", unique = true)})
 // @JsonPropertyOrder({"id", "username", "password", "email", "nickname",
 //         "authority", "createdAt", "modifiedAt"})
-@FieldDefaults(makeFinal = true, level = AccessLevel.PROTECTED)
 @Getter
 public class UserEntity extends TimeStamp {
     @Id
@@ -43,6 +42,10 @@ public class UserEntity extends TimeStamp {
     @NotNull
     @Enumerated(EnumType.STRING)
     Authority authority;
+    @Column
+    String profileImageUrl;
+    @Column
+    String description;
 
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "userEntity",
@@ -68,6 +71,8 @@ public class UserEntity extends TimeStamp {
         this.email = null;
         this.nickname = null;
         this.authority = null;
+        this.profileImageUrl = null;
+        this.description = null;
     }
 
     @Builder(builderClassName = "buildDefaultUser",
@@ -77,7 +82,9 @@ public class UserEntity extends TimeStamp {
                          String password,
                          String email,
                          String nickname,
-                         Authority authority) {
+                         Authority authority,
+                         String profileImageUrl,
+                         String description) {
         Assert.hasText(username, UserFunction.getClassName() +
                 "username이 비어있습니다.");
         Assert.hasText(password, UserFunction.getClassName() + "password가 비어있습니다.");
@@ -90,6 +97,8 @@ public class UserEntity extends TimeStamp {
         this.email = email;
         this.nickname = nickname;
         this.authority = authority;
+        this.profileImageUrl = profileImageUrl;
+        this.description = description == null ? "" : description;
     }
 
     public static UserEntity of(SignUpDto signUpDto, PasswordEncoder passwordEncoder) {
@@ -126,5 +135,11 @@ public class UserEntity extends TimeStamp {
     @Override
     public int hashCode() {
         return Objects.hash(username);
+    }
+
+    public void updateInfo(UserRequestDto requestDto) {
+        this.nickname = requestDto.getNickname();
+        this.profileImageUrl = requestDto.getProfileImageUrl();
+        this.description = requestDto.getDescription();
     }
 }

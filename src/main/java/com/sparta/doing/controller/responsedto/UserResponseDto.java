@@ -1,5 +1,6 @@
 package com.sparta.doing.controller.responsedto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.doing.entity.Authority;
 import com.sparta.doing.entity.UserEntity;
 import com.sparta.doing.util.UserFunction;
@@ -25,8 +26,12 @@ public class UserResponseDto {
     String email;
     @NotBlank
     String nickname;
+    @JsonIgnore
     @NotBlank
     Authority authority;
+
+    String description;
+    String profileImageUrl;
 
     public static UserResponseDto of(UserEntity userEntity) {
         Assert.notNull(userEntity,
@@ -36,6 +41,8 @@ public class UserResponseDto {
                 .email(userEntity.getEmail())
                 .nickname(userEntity.getNickname())
                 .authority(userEntity.getAuthority())
+                .description(userEntity.getDescription())
+                .profileImageUrl(userEntity.getProfileImageUrl())
                 .build();
     }
 }
