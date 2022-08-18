@@ -42,7 +42,7 @@ public class Board extends TimeStamp {
     private int countBoardVisit; // 게시판 방문자 수
 
     @Column(nullable = false)
-    private int boardLikeCount = 0; // 게시판 좋아요 수
+    private int boardLikeCount; // 게시판 좋아요 수
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

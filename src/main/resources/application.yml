@@ -13,16 +13,10 @@ spring:
       settings:
         web-allow-others: true
   datasource:
-    # In-Memory DB
-    url: jdbc:h2:mem:testdb
-    #    url: jdbc:h2:~/h2db/local
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-#    url: jdbc:mysql://<host_name>:3306/<database_name>
-#    username: <user_id>
-#    password: <password>
-#    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DB_URL}:3306/${DB_DATABASE}
+    username: ${DB_UESRNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate.ddl-auto: update
     open-in-view: false
@@ -45,9 +39,23 @@ spring:
 # 아래 값을 Base64로 인코딩함
 # spring-boot-security-jwt-innovationcamp-week6-doing-team6-chanho-secret-key
 jwt:
-  secret: c3ByaW5nLWJvb3Qtc2VjdXJpdHktand0LWlubm92YXRpb25jYW1wLXdlZWs2LWRvaW5nLXRlYW02LWNoYW5oby1zZWNyZXQta2V5
-  header: Authorization
-  # 액세스 토큰 유효기간 2시간
+  secret: ${JWT_SECRETKEY}
+  header: ${JWT_HEADER}
+  # 리프레쉬 토큰 유효기간 2시간
   access-token-lifetime-in-seconds: 7200
   # 리프레쉬 토큰 유효기간 3시간
   refresh-token-lifetime-in-seconds: 10800
+
+cloud:
+  aws:
+    s3:
+      bucket: ${AWS_BUCKET}
+    region:
+      static: ap-northeast-2
+    credentials:
+      accessKey: ${AWS_ACCESS_KEY}
+      secretKey: ${AWS_SECRET_KEY}
+      use-default-aws-credentials-chain: false
+      instance-profile: true
+    stack:
+      auto: false
