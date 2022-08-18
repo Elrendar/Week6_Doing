@@ -13,6 +13,7 @@ import com.sparta.doing.exception.BoardNotFoundException;
 import com.sparta.doing.repository.BoardLikeRepository;
 import com.sparta.doing.repository.BoardRepository;
 import com.sparta.doing.repository.UserRepository;
+import com.sparta.doing.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Transactional
@@ -90,8 +92,8 @@ public class BoardService {
         Board foundBoardToUpdate = boardRepository.findById(boardId)
                 .orElseThrow(() -> new BoardNotFoundException("해당 게시글은 존재하지 않습니다."));
         // 게시글 작성자와 현재 로그인한 유저의 userId를 비교하여 작성자인지 확인
-        if (foundBoardToUpdate.getUserEntity().getId().equals(userId)) {
-            foundBoardToUpdate.update(boardRequestDto);
+        if (!Objects.equals(foundBoardToUpdate.getUserEntity().getId(), SecurityUtil.getCurrentUserIdByLong())) {
+            throw new BoardNotFoundException("본인이 작성한 게시판만 수정이 가능합니다.");
         }
     }
 
@@ -100,8 +102,8 @@ public class BoardService {
         Board foundBoardToDelete = boardRepository.findById(boardId)
                 .orElseThrow(() -> new BoardNotFoundException("해당 게시글은 존재하지 않습니다."));
         // 게시글 작성자와 현재 로그인한 유저의 userId를 비교하여 작성자인지 확인
-        if (foundBoardToDelete.getUserEntity().getId().equals(userId)) {
-            boardRepository.delete(foundBoardToDelete);
+        if (!Objects.equals(foundBoardToDelete.getUserEntity().getId(), SecurityUtil.getCurrentUserIdByLong())) {
+            throw new BoardNotFoundException("본인이 작성한 게시판만 삭제가 가능합니다.");
         }
     }
 
@@ -146,6 +148,10 @@ public class BoardService {
                         () -> new BoardNotFoundException(
                                 boardId + ": 해당 게시판을 찾을 수 없습니다.")
                 );
+        if (!Objects.equals(board.getUserEntity().getId(), SecurityUtil.getCurrentUserIdByLong())) {
+            throw new BoardNotFoundException("본인이 작성한 게시판에만 글 작성이 가능합니다.");
+        }
+
         board.mapToPost(PostEntity.of(postRequestDto, board));
 
         return BoardResponseDto.from(board);

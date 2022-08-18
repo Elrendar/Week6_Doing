@@ -46,6 +46,8 @@ public class QUserEntity extends EntityPathBase<UserEntity> {
 
     public final ListPath<PostEntity, QPostEntity> posts = this.<PostEntity, QPostEntity>createList("posts", PostEntity.class, QPostEntity.class, PathInits.DIRECT2);
 
+    public final StringPath profileImageUrl = createString("profileImageUrl");
+
     public final StringPath username = createString("username");
 
     public QUserEntity(String variable) {

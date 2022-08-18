@@ -193,6 +193,7 @@ public class UserService {
 
     @Transactional
     public UserResponseDto updateUserInfo(UserRequestDto requestDto) {
+
         var userId = SecurityUtil.getCurrentUserIdByLong();
         var user = userRepository.findById(userId)
                 .orElseThrow(

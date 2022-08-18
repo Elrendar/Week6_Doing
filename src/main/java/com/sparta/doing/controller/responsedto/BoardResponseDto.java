@@ -45,6 +45,7 @@ public class BoardResponseDto {
                 .id(board.getId())
                 .boardTitle(board.getBoardTitle())
                 .boardContent(board.getBoardContent())
+                .authorName(board.getAuthorName())
                 .boardHashtag(board.getBoardHashtag())
                 .countBoardVisit(board.getCountBoardVisit())
                 .posts(board.getPosts())

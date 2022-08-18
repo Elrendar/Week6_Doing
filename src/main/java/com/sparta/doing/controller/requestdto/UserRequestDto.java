@@ -7,13 +7,18 @@ import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.jackson.Jacksonized;
 
+import javax.validation.constraints.NotNull;
+
 @Jacksonized
 @Getter
 @Builder
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PROTECTED)
 public class UserRequestDto {
+    @NotNull
     String nickname;
+    @NotNull
     String profileImageUrl;
+    @NotNull
     String description;
 }

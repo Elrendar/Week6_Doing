@@ -98,34 +98,22 @@ public class SecurityConfig /*implements WebMvcConfigurer*/ {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
-                // // 로그인 시도 할 때 DB에서 조회해 검증할 값(테스트 필요함)
-                // .and()
-                // .formLogin()
-                // .usernameParameter("loginId")
-                // .passwordParameter("password")
                 .and()
                 .logout()
                 .logoutUrl("/users/logout")
-                // .logoutSuccessUrl("로그인화면")
-                // .invalidateHttpSession(true).deleteCookies("JSESSIONID")
                 // 로그인, 회원가입 등 토큰이 없을 때 요청이 들어오는 API는 permitAll
                 .and()
                 .authorizeRequests()
-                //.antMatchers("/login").permitAll()
-                //.antMatchers("/h2-console/**").permitAll()
-                //.antMatchers("/users/auth/**").hasAnyAuthority()
 
                 .antMatchers("/users/auth/renew").hasAnyAuthority(Authority.ROLE_USER.name())
+                .antMatchers("/users/mypage").hasAnyAuthority(Authority.ROLE_USER.name())
                 .antMatchers("/users/**").permitAll()
                 .antMatchers("/").permitAll()
 
                 .antMatchers(HttpMethod.GET, "/boards/**").permitAll()
-                // .antMatchers(HttpMethod.GET, "/boards/**/posts/**").permitAll()
-                // .antMatchers(HttpMethod.POST, "/boards/**/posts/**").hasAnyAuthority(Authority.ROLE_USER.name())
                 .antMatchers(HttpMethod.POST, "/boards/**").hasAnyAuthority(Authority.ROLE_USER.name())
                 .antMatchers(HttpMethod.PUT, "/boards/**").hasAnyAuthority(Authority.ROLE_USER.name())
                 .antMatchers(HttpMethod.DELETE, "/boards/**").hasAnyAuthority(Authority.ROLE_USER.name())
-
 
                 // 나머지는 전부 인증 필요
                 .anyRequest().authenticated()

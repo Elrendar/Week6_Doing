@@ -114,8 +114,9 @@ public class UserController {
         return userService.getUserInfo(userId);
     }
 
+    // 마이페이지 정보 수정
     @PostMapping("/mypage")
-    public UserResponseDto updateMyInfo(UserRequestDto userRequestDto) {
+    public UserResponseDto updateMyInfo(@RequestBody UserRequestDto userRequestDto) {
         return userService.updateUserInfo(userRequestDto);
     }
 

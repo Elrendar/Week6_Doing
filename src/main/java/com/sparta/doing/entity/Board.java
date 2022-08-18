@@ -92,7 +92,7 @@ public class Board extends TimeStamp {
         postCount = posts.size();
         postEntity.setBoard(this);
     }
-    
+
     public void update(BoardRequestDto boardDto) {
         this.boardTitle = boardDto.getBoardTitle();
         this.boardContent = boardDto.getBoardContent();
